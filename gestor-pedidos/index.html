@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestor de pedidos de material</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Orden de carga: la clase Producto debe existir antes que app.js -->
+  <script src="js/producto.js" defer></script>
+  <script src="js/calculos.js" defer></script>
+  <script src="js/datos.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="cabecera">
+    <h1>Gestor de pedidos de material</h1>
+    <p>Catálogo, carrito e historial en el navegador</p>
+  </header>
+
+  <main class="rejilla">
+
+    <!-- ============ CATÁLOGO ============ -->
+    <section class="panel" id="seccion-catalogo" aria-labelledby="t-catalogo">
+      <h2 id="t-catalogo">Catálogo</h2>
+
+      <div class="filtros">
+        <div class="campo">
+          <label for="busqueda">Buscar por nombre</label>
+          <input type="search" id="busqueda" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label for="filtro-categoria">Categoría</label>
+          <select id="filtro-categoria">
+            <option value="">Todas</option>
+            <!-- Los value deben coincidir exactamente con producto.categoria -->
+            <option value="Periféricos">Periféricos</option>
+            <option value="Pantallas">Pantallas</option>
+            <option value="Audio">Audio</option>
+            <option value="Accesorios">Accesorios</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="catalogo" class="catalogo"></div>
+      <p id="catalogo-vacio" class="vacio" hidden>Ningún producto coincide con la búsqueda. Cambia el texto o la categoría.</p>
+    </section>
+
+    <!-- ============ CARRITO + FORMULARIO ============ -->
+    <div class="columna-lateral">
+
+      <section class="panel" id="seccion-carrito" aria-labelledby="t-carrito">
+        <h2 id="t-carrito">Carrito</h2>
+
+        <!-- Contenedor común para la delegación de eventos (botones "Quitar") -->
+        <div id="carrito-lista" class="carrito-lista"></div>
+        <p id="carrito-vacio" class="vacio">El carrito está vacío. Añade productos desde el catálogo.</p>
+
+        <dl class="totales">
+          <div><dt>Unidades</dt><dd id="carrito-unidades">0</dd></div>
+          <div><dt>Subtotal</dt><dd id="carrito-subtotal">0.00 €</dd></div>
+          <div><dt>Descuento</dt><dd id="carrito-descuento">0.00 €</dd></div>
+          <div class="total"><dt>Total</dt><dd id="carrito-total">0.00 €</dd></div>
+        </dl>
+      </section>
+
+      <section class="panel" id="seccion-formulario" aria-labelledby="t-form">
+        <h2 id="t-form">Confirmar pedido</h2>
+
+        <form id="form-pedido" novalidate>
+
+          <div class="campo">
+            <label for="nombre">Nombre y apellidos</label>
+            <input type="text" id="nombre" name="nombre" required minlength="2" maxlength="60"
+                   autocomplete="name" aria-describedby="error-nombre">
+            <p class="error" id="error-nombre" role="alert"></p>
+          </div>
+
+          <div class="campo">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" required
+                   autocomplete="email" aria-describedby="error-email">
+            <p class="error" id="error-email" role="alert"></p>
+          </div>
+
+          <fieldset class="grupo">
+            <legend>Modalidad de entrega</legend>
+            <label class="opcion">
+              <input type="radio" name="entrega" value="recogida" checked> Recogida en tienda
+            </label>
+            <label class="opcion">
+              <input type="radio" name="entrega" value="envio"> Envío a domicilio
+            </label>
+            <p class="error" id="error-entrega" role="alert"></p>
+          </fieldset>
+
+          <!-- Se muestra solo si entrega === "envio" (JS quita/pone el atributo hidden) -->
+          <fieldset class="grupo" id="datos-envio" hidden>
+            <legend>Datos de envío</legend>
+            <div class="campo">
+              <label for="direccion">Dirección</label>
+              <input type="text" id="direccion" name="direccion" minlength="5" maxlength="100"
+                     autocomplete="street-address" aria-describedby="error-direccion">
+              <p class="error" id="error-direccion" role="alert"></p>
+            </div>
+            <div class="campo">
+              <label for="cp">Código postal</label>
+              <input type="text" id="cp" name="cp" inputmode="numeric" maxlength="5"
+                     autocomplete="postal-code" aria-describedby="error-cp">
+              <p class="error" id="error-cp" role="alert"></p>
+            </div>
+          </fieldset>
+
+          <div class="campo">
+            <label for="observaciones">Observaciones (opcional)</label>
+            <textarea id="observaciones" name="observaciones" rows="3" maxlength="200"
+                      aria-describedby="contador error-observaciones"></textarea>
+            <p class="contador"><span id="contador">0</span> / 200 caracteres</p>
+            <p class="error" id="error-observaciones" role="alert"></p>
+          </div>
+
+          <div class="campo">
+            <label class="opcion">
+              <input type="checkbox" id="acepto" name="acepto" required aria-describedby="error-acepto">
+              Confirmo que los datos del pedido son correctos
+            </label>
+            <p class="error" id="error-acepto" role="alert"></p>
+          </div>
+
+          <button type="submit" class="btn btn-principal">Confirmar pedido</button>
+          <!-- Mensaje general (éxito o error global del pedido) -->
+          <p id="mensaje-form" class="mensaje" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
+
+    <!-- ============ HISTORIAL ============ -->
+    <section class="panel ancho-completo" id="seccion-historial" aria-labelledby="t-historial">
+      <h2 id="t-historial">Historial de pedidos</h2>
+
+      <div class="filtros">
+        <div class="campo">
+          <label for="filtro-entrega">Modalidad</label>
+          <select id="filtro-entrega">
+            <option value="todos">Todos</option>
+            <option value="recogida">Recogida</option>
+            <option value="envio">Envío</option>
+          </select>
+        </div>
+        <p id="historial-resumen" class="resumen" aria-live="polite">0 pedidos · 0.00 €</p>
+        <button type="button" id="btn-exportar" class="btn">Exportar historial</button>
+      </div>
+
+      <div id="historial-lista" class="historial-lista"></div>
+      <p id="historial-vacio" class="vacio">Todavía no hay pedidos. Confirma uno para verlo aquí.</p>
+
+      <div class="exportacion">
+        <label for="exportacion">JSON del historial</label>
+        <textarea id="exportacion" rows="8" readonly></textarea>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
