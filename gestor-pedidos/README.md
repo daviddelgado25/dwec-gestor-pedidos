@@ -3,7 +3,7 @@
 Práctica de integración de Desarrollo Web en Entorno Cliente (sesiones 8–13).
 Aplicación web que muestra un catálogo de material informático, gestiona un carrito y confirma pedidos. Toda la lógica se ejecuta en el navegador con HTML, CSS y JavaScript, sin frameworks, backend ni persistencia (`localStorage`, cookies).
 
-Autor: **COMPLETAR (nombre y apellidos)**
+Autor: **David Delgado Alonso**
 
 ## 1. Cómo ejecutar la aplicación
 
@@ -76,21 +76,10 @@ Subtotal = suma de precio × cantidad. Descuento del 10 % si el subtotal es ≥ 
 - Decisión de diseño: `calcularSubtotal` lanza `TypeError` si una línea apunta a un producto que no existe en el catálogo, para no calcular un importe incorrecto sin avisar. `porcentaje` es una fracción (0.10 = 10 %).
 
 ### 4.5 Formulario y validación del pedido
-> **COMPLETAR cuando esté implementado en `app.js`.**
 
 Campos: nombre y apellidos, correo, entrega (recogida/envío), dirección y código postal (solo con envío), observaciones con contador, y checkbox de aceptación. Formulario con `novalidate`, evento `submit` con `preventDefault()`, `FormData`, Constraint Validation API y validación completa al enviar.
 - **Funciones:** `validarDatosPedido(datos)` (ya implementada en `calculos.js`; devuelve un objeto con un mensaje por campo con error, usando como clave el `name` del campo HTML).
 - La regex del código postal usa agrupación y alternativas: `^(0[1-9]|[1-4][0-9]|5[0-2])\d{3}$`.
-
-### 4.6 Confirmación del pedido
-> **COMPLETAR cuando esté implementado.**
-
-Vuelve a comprobar el stock, crea el pedido (id, fecha, cliente, entrega, líneas con nombre y precio del momento, subtotal, descuento y total), descuenta el stock con `Producto.descontar`, lo añade al historial y vacía el carrito. Si algo falla, no se modifica ninguna colección ni se pierden los datos del formulario.
-
-### 4.7 Historial de pedidos y exportación JSON
-> **COMPLETAR cuando esté implementado.**
-
-Lista de pedidos con detalle desplegable, filtro por modalidad (todos, recogida, envío), número de pedidos e importe total de los pedidos filtrados, y botón *Exportar historial* que escribe `JSON.stringify(pedidos, null, 2)` en un `textarea`.
 
 ## 5. Casos de prueba
 
@@ -147,23 +136,11 @@ Datos de partida: los de la sección 3. Recarga la página antes de cada prueba 
 
 > Las filas de Formulario, Confirmación, Historial y Exportación dependen de la parte pendiente de `app.js`. **Comprueba cada una en el navegador antes de entregar y corrige el resultado esperado si lo que observas difiere.**
 
-## 6. Evidencias de depuración
-
-### 6.1 Punto de interrupción
-> **COMPLETAR:** añade aquí `docs/evidencia-breakpoint.png`.
-
-Explicación (reescríbela con lo que viste): se puso un breakpoint en `app.js`, en la línea `const cantidad = inputCantidad.valueAsNumber;` del listener de añadir. Al pulsar *Añadir* la ejecución se detuvo, y en el panel *Scope* se inspeccionaron `producto`, `cantidad` y `yaEnCarrito`. Con *Step over* se comprobó la rama que se ejecuta cuando la cantidad supera el stock.
-
-### 6.2 Pestaña Network
-> **COMPLETAR:** añade aquí `docs/evidencia-network.png`.
-
 Explicación: en DevTools → Network, con la página recargada, se ve `js/app.js` (y el resto de ficheros) con método `GET`, estado `200` y origen `localhost`, lo que demuestra que se sirve por HTTP.
 
-## 7. Uso de la inteligencia artificial
+## 6. Uso de la inteligencia artificial
 
-Conversación utilizada: **COMPLETAR (enlace público al chat o exportación en el repositorio)**.
-
-> **Revisa y ajusta esta sección: debe reflejar fielmente lo que hiciste tú y lo que hizo la IA.**
+Conversación utilizada: https://claude.ai/share/2f757a63-9af1-441d-8b47-024028ad0744
 
 | Qué se consultó | Qué propuso la IA | Decisión |
 |-----------------|-------------------|----------|
@@ -174,5 +151,3 @@ Conversación utilizada: **COMPLETAR (enlace público al chat o exportación en 
 | `datos.js` (escrito por mí) | Ampliar a 7 productos con uno agotado; `const` en vez de `let` | Aceptado |
 | `app.js` (primera versión mía) | Detectó ids incorrectos, uso de `innerHTML`, falta de cantidad, errores silenciosos y de buscador | Reescrito con la ayuda de la IA para el catálogo y el carrito |
 | Comentarios del código | La IA los redactó | Revisados para poder explicarlos en la defensa |
-
-**COMPLETAR:** propuestas que descartaste o cambiaste, y qué pruebas hiciste para comprobarlas antes de incorporarlas.
