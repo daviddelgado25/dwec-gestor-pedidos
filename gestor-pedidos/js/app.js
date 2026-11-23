@@ -284,6 +284,4 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCatalogo();
     renderCarrito();
 
-    // PENDIENTE (hazlo tú): formulario y validación, confirmar pedido,
-    // historial, filtro del historial y exportación JSON.
 });
